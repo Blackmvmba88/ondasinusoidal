@@ -28,9 +28,13 @@ FORMAT = pyaudio.paInt16
 CHANNELS = 1
 RATE = 44100  # Frecuencia de muestreo
 
-# Cola para comunicación entre hilos
-audio_queue = queue.Queue()
-stats_queue = queue.Queue()
+# Colas para comunicación entre hilos
+audio_queue = queue.Queue(maxsize=10)
+stats_queue_viz = queue.Queue(maxsize=10)  # Para visualización matplotlib
+stats_queue_rich = queue.Queue(maxsize=10)  # Para display Rich
+
+# Event para shutdown graceful
+shutdown_event = threading.Event()
 
 class AudioProcessor:
     """Procesa el audio capturado y extrae características"""
@@ -77,6 +81,7 @@ class AudioProcessor:
 def audio_capture_thread():
     """Hilo para captura continua de audio"""
     p = pyaudio.PyAudio()
+    console = Console()
     
     try:
         stream = p.open(
@@ -89,7 +94,7 @@ def audio_capture_thread():
         
         processor = AudioProcessor()
         
-        while True:
+        while not shutdown_event.is_set():
             try:
                 # Leer datos de audio
                 data = stream.read(CHUNK, exception_on_overflow=False)
@@ -104,15 +109,30 @@ def audio_capture_thread():
                 amplitude = processor.get_amplitude(audio_data)
                 level_db = processor.get_level_db(audio_data)
                 
-                # Enviar datos a las colas
-                audio_queue.put(audio_data)
-                stats_queue.put({
+                stats = {
                     'frequency': freq,
                     'amplitude': amplitude,
                     'level_db': level_db
-                })
+                }
+                
+                # Enviar datos a las colas (sin bloquear si están llenas)
+                try:
+                    audio_queue.put_nowait(audio_data)
+                except queue.Full:
+                    pass  # Descartar si la cola está llena
+                
+                try:
+                    stats_queue_viz.put_nowait(stats)
+                except queue.Full:
+                    pass
+                
+                try:
+                    stats_queue_rich.put_nowait(stats)
+                except queue.Full:
+                    pass
                 
             except Exception as e:
+                console.print(f"[yellow]Advertencia en captura: {e}[/yellow]")
                 continue
                 
     except Exception as e:
@@ -221,9 +241,9 @@ class PsychedelicVisualizer:
             if not audio_queue.empty():
                 self.audio_buffer = audio_queue.get()
             
-            # Obtener estadísticas
-            if not stats_queue.empty():
-                stats = stats_queue.get()
+            # Obtener estadísticas (usando cola específica para visualización)
+            if not stats_queue_viz.empty():
+                stats = stats_queue_viz.get()
                 frequency = stats['frequency']
                 self.update_colors(frequency)
             
@@ -268,13 +288,15 @@ def rich_display_thread():
     console = Console()
     
     with Live(console=console, refresh_per_second=10) as live:
-        while True:
+        while not shutdown_event.is_set():
             try:
-                if not stats_queue.empty():
-                    stats = stats_queue.get()
+                # Usar cola específica para Rich
+                if not stats_queue_rich.empty():
+                    stats = stats_queue_rich.get()
                     display = create_rich_display(stats)
                     live.update(display)
             except Exception as e:
+                console.print(f"[yellow]Advertencia en display: {e}[/yellow]")
                 continue
 
 def main():
@@ -310,6 +332,8 @@ def main():
     except Exception as e:
         console.print(f"\n[red]Error: {e}[/red]")
     finally:
+        # Señalar a los hilos que deben terminar
+        shutdown_event.set()
         console.print("[green]¡Hasta luego![/green]\n")
 
 if __name__ == "__main__":
