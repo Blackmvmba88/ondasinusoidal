@@ -1,38 +1,50 @@
-# Roadmap del proyecto Ondasinusoidal
+# Roadmap de Visualización
 
-(versión inicial — por llenar y expandir)
+(v0.1 — lienzo inicial)
 
-## 1. Core actual
+## 1. Modo base actual
 
-* Captura de audio en tiempo real
-* FFT para frecuencia dominante
-* RMS + dB
-* Visualización onda + espectro
+* Onda + FFT
 * Colores reactivos
-* Rich para UI terminal
+* Ventana matplotlib + terminal rich
+* 20 FPS
 
-## 2. MVP v0.1 (completado)
+## 2. Modos de visualización (por integrar)
 
-* Captura estable
-* Visualización simultánea
-* Métricas básicas
+* Onda artística
+* Espectro dinámico
+* Barras musicales
+* Lissajous
+* Estrella armónica
+* Campo vectorial
+* Nebulosa
 
-## 3. Próximos pasos sugeridos
+## 3. Parámetros visuales
 
-* (por listar)
+* Color mapping
+* Blur
+* Tail / persistencia
+* Glow
+* Distorsiones
+* Partículas
 
-## 4. Epic Features
+## 4. Control en tiempo real
 
-* (por listar)
+* Teclas
+* MIDI
+* OSC
+* Presets
 
-## 5. Integraciones externas
+## 5. Output
 
-* (por listar)
+* Overlay streaming
+* Grabación
+* Render offline
+* VR/AR
 
-## 6. Experimentos futuristas
+## 6. Futuro experimental
 
-* (por listar)
-
-## 7. Preguntas abiertas
-
-* (por listar)
+* Láser ILDA
+* DMX luz
+* TouchDesigner bridge
+* Unreal/Unity
