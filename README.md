@@ -1,94 +1,257 @@
-# ondasinusoidal 🎵
+# Resonance Observatory — ondasinusoidal 🎵🌊
 
-Una onda sinusoidal es una señal que sube y baja suavemente de manera repetitiva y perfecta, formando una curva continua. Representa un movimiento armónico simple: cada punto de la señal cambia con el tiempo siguiendo un patrón regular.
+> **Un laboratorio ligero para observar sonido, frecuencia y resonancia en tiempo real.**
 
-## Descripción
+`ondasinusoidal` nació como un visualizador de ondas senoidales, pero su verdadero potencial está en algo más grande: convertir señales acústicas vivas en geometría, métricas e intuición física.
 
-Este programa captura audio desde el micrófono en tiempo real, procesa la señal como una onda sinusoidal y la visualiza de forma dinámica con efectos psicodélicos. 
+Este repositorio captura audio desde el micrófono, analiza su contenido espectral y lo transforma en visualizaciones dinámicas. Es una base práctica para explorar DSP, FFT, resonancia, armónicos, presión sonora y comportamiento ondulatorio.
 
-### Características
+---
 
-- **Captura de audio en tiempo real** desde el micrófono
-- **Análisis de señal** con numpy y scipy:
-  - Frecuencia dominante mediante FFT
-  - Amplitud RMS
-  - Nivel en decibelios
-- **Visualización gráfica dinámica** con matplotlib:
-  - Forma de onda sinusoidal en tiempo real
-  - Espectro de frecuencias con FFT
-  - Colores psicodélicos que reaccionan a la frecuencia
-- **Interfaz de terminal** con rich:
-  - Información en vivo de frecuencia, amplitud y nivel
-  - Barra de nivel visual
-  - Bordes de colores dinámicos
+## Visión
+
+Una onda no es solo una curva: es una forma de energía organizada.
+
+Este proyecto busca funcionar como un **observatorio de resonancia**:
+
+- escuchar una señal viva,
+- descomponerla en frecuencia,
+- medir su amplitud y energía,
+- visualizar su movimiento,
+- detectar patrones armónicos,
+- y construir intuición sobre cómo el sonido se comporta como fenómeno físico.
+
+En términos simples:
+
+```txt
+micrófono → señal temporal → FFT → espectro → métricas → visualización
+```
+
+En términos de arquitectura:
+
+```txt
+Input Field
+   ↓
+Signal Acquisition
+   ↓
+Spectral Decomposition
+   ↓
+Resonance Mapping
+   ↓
+Visual Cognition Layer
+```
+
+---
+
+## Características actuales
+
+- **Captura de audio en tiempo real** desde micrófono.
+- **Procesamiento de señal** con `numpy` y `scipy`.
+- **FFT** para detectar frecuencia dominante.
+- **Cálculo de amplitud RMS**.
+- **Nivel en decibelios**.
+- **Visualización dinámica** con `matplotlib`.
+- **Forma de onda en tiempo real**.
+- **Espectro de frecuencias**.
+- **Colores reactivos** según la frecuencia dominante.
+- **Interfaz en terminal** con `rich`.
+- **Procesamiento multihilo** para captura y visualización simultáneas.
+
+---
+
+## Fundamento físico
+
+Una onda sinusoidal representa movimiento armónico simple:
+
+```txt
+x(t) = A sin(2πft + φ)
+```
+
+Donde:
+
+| Símbolo | Significado |
+|---|---|
+| `A` | Amplitud |
+| `f` | Frecuencia |
+| `t` | Tiempo |
+| `φ` | Fase |
+
+La idea central es que cualquier sonido complejo puede entenderse como una combinación de componentes sinusoidales. La FFT permite descomponer la señal y observar sus frecuencias internas.
+
+---
 
 ## Instalación
 
-### Requisitos previos
+### Requisitos
 
 - Python 3.7 o superior
 - Micrófono funcional
-- PortAudio (requerido por PyAudio)
+- PortAudio
 
-#### Instalar PortAudio en Linux:
+### Linux
+
 ```bash
 sudo apt-get install portaudio19-dev python3-pyaudio
 ```
 
-#### Instalar PortAudio en macOS:
+### macOS
+
 ```bash
 brew install portaudio
 ```
 
-#### En Windows:
-PyAudio debería funcionar directamente con pip.
-
-### Instalar dependencias
+### Dependencias Python
 
 ```bash
 pip install -r requirements.txt
 ```
 
-## Uso
+---
 
-Ejecutar el programa:
+## Uso
 
 ```bash
 python3 ondasinusoidal.py
 ```
 
-El programa abrirá dos ventanas:
-1. **Terminal** - Muestra información en vivo sobre la señal de audio
-2. **Ventana gráfica** - Visualización dinámica de la onda sinusoidal y el espectro
+El programa abre dos interfaces:
 
-Habla, canta o reproduce música cerca del micrófono para ver los efectos visuales psicodélicos en acción.
+1. **Terminal** — muestra métricas en vivo.
+2. **Ventana gráfica** — muestra forma de onda y espectro.
 
-Para salir, presiona `Ctrl+C` o cierra la ventana gráfica.
+Prueba con:
 
-## Tecnologías utilizadas
+- voz,
+- canto,
+- palmadas,
+- música,
+- bajos/subgraves,
+- tonos puros,
+- instrumentos acústicos.
 
-- **numpy** - Análisis numérico y procesamiento de señales
-- **matplotlib** - Visualización gráfica dinámica
-- **pyaudio** - Captura de audio del micrófono
-- **scipy** - Transformada de Fourier (FFT) para análisis de frecuencias
-- **rich** - Interfaz de terminal con información en vivo
+Para salir:
 
-## Funcionamiento
+```bash
+Ctrl+C
+```
 
-1. El programa captura audio continuamente del micrófono en chunks de 2048 muestras
-2. Cada chunk se analiza para extraer:
-   - Frecuencia dominante usando FFT con ventana de Hanning
-   - Amplitud RMS de la señal
-   - Nivel en decibelios
-3. Los datos se visualizan en tiempo real:
-   - La forma de onda muestra la señal de audio
-   - El espectro muestra las frecuencias presentes
-   - Los colores cambian según la frecuencia dominante
-4. La terminal muestra las métricas actualizadas 10 veces por segundo
+O cierra la ventana gráfica.
 
-## Características técnicas
+---
 
-- Frecuencia de muestreo: 44100 Hz
-- Tamaño de buffer: 2048 muestras
-- Tasa de refresco visual: 20 FPS
-- Procesamiento multihilo para captura y visualización simultáneas
+## Métricas observadas
+
+| Métrica | Función |
+|---|---|
+| Frecuencia dominante | Detecta el pico principal del espectro |
+| RMS | Estima energía/amplitud efectiva |
+| dB | Mide nivel relativo de señal |
+| FFT spectrum | Revela armónicos y distribución frecuencial |
+| Waveform | Muestra el comportamiento temporal |
+
+---
+
+## Parámetros técnicos
+
+| Parámetro | Valor |
+|---|---|
+| Sample rate | `44100 Hz` |
+| Buffer size | `2048` muestras |
+| Visual refresh | `20 FPS` |
+| Terminal refresh | `10 Hz` |
+| Procesamiento | Multihilo |
+
+---
+
+## Tecnologías
+
+- `numpy` — análisis numérico.
+- `scipy` — FFT y procesamiento de señal.
+- `matplotlib` — visualización gráfica.
+- `pyaudio` — captura de audio.
+- `rich` — terminal interactiva.
+
+---
+
+## Roadmap conceptual
+
+### Phase 1 — Signal Observatory ✅
+
+Base actual:
+
+- captura de audio,
+- FFT,
+- RMS,
+- decibeles,
+- visualización en vivo.
+
+### Phase 2 — Harmonic Intelligence 🔄
+
+Próximos módulos posibles:
+
+- detección de armónicos,
+- clasificación de energía sonora,
+- detección de subgraves,
+- medición de ruido,
+- tracking de frecuencia en el tiempo.
+
+### Phase 3 — Cymatics Mode 📋
+
+Visualización física inspirada en cimática:
+
+- nodos,
+- patrones circulares,
+- partículas reactivas,
+- geometría emergente desde frecuencia.
+
+### Phase 4 — Music Physics 📋
+
+Herramientas para producción musical:
+
+- kick/sub analyzer,
+- tonal center detector,
+- spectral density,
+- stereo field map,
+- transient detection.
+
+### Phase 5 — Archimedes Bridge 📋
+
+Conexión futura con laboratorios de resonancia física:
+
+- osciladores clásicos,
+- modos resonantes,
+- absorción,
+- coherencia,
+- visualización avanzada de campos.
+
+---
+
+## Filosofía
+
+Este repo no busca solamente dibujar ondas bonitas.
+
+Busca convertir audio en una forma de observación:
+
+```txt
+escuchar → medir → visualizar → comprender
+```
+
+La señal se vuelve geometría.
+La frecuencia se vuelve estructura.
+El sonido se vuelve laboratorio.
+
+---
+
+## Estado
+
+Proyecto funcional en Python.
+
+Base estable para experimentos de audio, visualización, resonancia y análisis espectral.
+
+---
+
+## Autor
+
+Desarrollado por **BlackMamba / Iyari Gomez**.
+
+Parte del ecosistema creativo-técnico BlackMamba: música, física, visualización, resonancia y sistemas inteligentes.
